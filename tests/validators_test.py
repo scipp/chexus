@@ -276,11 +276,8 @@ def test_units_invalid(units: str):
     [
         ('hz', False),
         ('', False),
-        # Technically correct but without a unit library
-        # that is hard to verify
-        ('1/year', False),
-        # Incorrect, but passes the current heuristic
-        ('s/chicken_legs', True),
+        ('m/s', False),
+        ('1/year', True),
         ('Hz', True),
         ('MHz', True),
         ('1/ms', True),

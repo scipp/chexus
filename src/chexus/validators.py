@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2023 Scipp contributors (https://github.com/scipp)
 import numpy as np
+import pint
 
 from .tree import Dataset, Group
 from .validate import Validator, Violation
+
+ureg = pint.UnitRegistry()
 
 
 class NX_class_attr_missing(Validator):
@@ -222,8 +225,13 @@ class chopper_frequency_units_invalid(Validator):
     def validate(self, node: Dataset | Group) -> Violation | None:
         if 'units' in node.children.get('rotation_speed').attrs:
             unit = node.children.get('rotation_speed').attrs.get('units')
-            if unit.endswith('Hz') or unit.endswith('s') and '/' in unit:
-                return
+            try:
+                unit = ureg(unit)
+            except pint.errors.UndefinedUnitError:
+                pass
+            else:
+                if unit.dimensionality == ureg('Hz').dimensionality:
+                    return
         return Violation(node.name)
 
 
