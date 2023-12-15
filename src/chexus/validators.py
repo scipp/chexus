@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2023 Scipp contributors (https://github.com/scipp)
 import numpy as np
+import pint
 
 from .tree import Dataset, Group
 from .validate import Validator, Violation
+
+ureg = pint.UnitRegistry()
 
 
 class NX_class_attr_missing(Validator):
@@ -205,6 +208,33 @@ class transformation_depends_on_missing(Validator):
             return Violation(node.name)
 
 
+class chopper_frequency_units_invalid(Validator):
+    def __init__(self) -> None:
+        super().__init__(
+            "chopper_frequency_unit_invalid",
+            "The unit of NXdisk_chopper.rotation_speed should have dimension 1/Time",
+        )
+
+    def applies_to(self, node: Dataset | Group) -> bool:
+        return (
+            isinstance(node, Group)
+            and node.attrs.get('NX_class') == 'NXdisk_chopper'
+            and 'rotation_speed' in node.children
+        )
+
+    def validate(self, node: Dataset | Group) -> Violation | None:
+        if 'units' in node.children.get('rotation_speed').attrs:
+            unit = node.children.get('rotation_speed').attrs.get('units')
+            try:
+                unit = ureg(unit)
+            except pint.errors.UndefinedUnitError:
+                pass
+            else:
+                if unit.dimensionality == ureg('Hz').dimensionality:
+                    return
+        return Violation(node.name)
+
+
 physical_components = [
     'NXaperture',
     'NXattenuator',
@@ -271,5 +301,5 @@ def base_validators():
         NX_class_is_legacy(),
         transformation_depends_on_missing(),
         transformation_offset_units_missing(),
-        units_invalid(),
+        chopper_frequency_units_invalid(),
     ]
