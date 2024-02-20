@@ -23,7 +23,7 @@ def _read_attrs(node: h5py.Dataset | h5py.Group) -> dict[str, Any]:
     return attrs
 
 
-def _read_group(group: h5py.File, parent: Group | None = None) -> Group:
+def _read_group(group: h5py.File | h5py.Group, parent: Group | None = None) -> Group:
     """Read HDF5 group"""
     grp = Group(name=group.name, attrs=_read_attrs(group), children={}, parent=parent)
     for name, value in group.items():
