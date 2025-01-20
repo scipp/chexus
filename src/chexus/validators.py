@@ -361,7 +361,9 @@ class NXdetector_pixel_offsets_are_unambiguous(Validator):
             "Shape of pixel offsets does not correspond to detector_number",
             "If detector_number is multi-dimensional, so should the pixel_offsets, "
             "else group attributes AXISNAME_indices (see NXdata) should indicate the "
-            "correspondence between detector_number and pixel_offsets.",
+            "correspondence between detector_number and pixel_offsets, "
+            "or else the (legacy) axis attribute on the pixel offset datasets should "
+            "indicate the correspondence between detector number and pixel_offsets.",
         )
 
     def applies_to(self, node: Dataset | Group) -> bool:
@@ -379,7 +381,11 @@ class NXdetector_pixel_offsets_are_unambiguous(Validator):
             if key not in node.children:
                 continue
             pixel_shape = node.children[key].shape
-            if shape != pixel_shape and f'{key}_indices' not in node.attrs:
+            if (
+                shape != pixel_shape
+                and f'{key}_indices' not in node.attrs
+                and 'axis' not in node.children[key].attrs
+            ):
                 return Violation(
                     node.name,
                     f'{key} shape does not match detector_number and no {key}_indices '
