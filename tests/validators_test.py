@@ -773,3 +773,29 @@ def test_NXdetector_pixel_offsets_are_unambiguous_2d_ids_1d_offsets_with_indices
         chexus.validators.NXdetector_pixel_offsets_are_unambiguous().validate(det)
         is None
     )
+
+
+def test_NXdetector_pixel_offsets_are_unambiguous_2d_ids_allow_axis_attr() -> None:
+    det = chexus.Group(name="detector1", attrs={"NX_class": "NXdetector"})
+    det.children = {
+        'detector_number': chexus.Dataset(
+            name="detector_number",
+            value=[[1, 2], [3, 4]],
+            shape=(2, 2),
+            dtype=int,
+            parent=det,
+        ),
+        'x_pixel_offset': chexus.Dataset(
+            name="x_pixel_offset",
+            value=[1, 2],
+            shape=(2,),
+            dtype=int,
+            parent=det,
+            attrs={'axis': 0},
+        ),
+    }
+    assert chexus.validators.NXdetector_pixel_offsets_are_unambiguous().applies_to(det)
+    assert (
+        chexus.validators.NXdetector_pixel_offsets_are_unambiguous().validate(det)
+        is None
+    )
