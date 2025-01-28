@@ -352,13 +352,12 @@ class event_id_subset_of_detector_number(Validator):
         detector_numbers = node.parent.children['detector_number'].value
         if not np.isin(event_ids, detector_numbers).all():
             show_max = 5
-            diff = ','.join(
-                map(str, np.setdiff1d(event_ids, detector_numbers)[:show_max])
-            )
+            diff = np.setdiff1d(event_ids, detector_numbers)[:show_max]
             return Violation(
                 node.name,
                 'event_id:s that are not in detector_number: '
-                f'{diff}{",..." if len(diff) > show_max else ""}',
+                f'{",".join(map(str, diff))}'
+                f'{",..." if len(diff) > show_max else ""}',
             )
 
 
