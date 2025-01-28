@@ -654,12 +654,12 @@ def test_event_id_not_in_detector_number():
         )
         is None
     )
-    assert (
-        chexus.validators.event_id_subset_of_detector_number().validate(
-            det.children['data_bad']
-        )
-        is not None
+    violation = chexus.validators.event_id_subset_of_detector_number().validate(
+        det.children['data_bad']
     )
+    assert violation is not None
+    assert '4' in violation.description
+    assert '...' not in violation.description
 
 
 def test_NXdetector_pixel_offsets_are_unambiguous_1d_ids_1d_offset() -> None:
