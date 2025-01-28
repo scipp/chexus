@@ -659,7 +659,6 @@ def test_event_id_not_in_detector_number():
     )
     assert violation is not None
     assert '4' in violation.description
-    assert '...' not in violation.description
 
 
 def test_NXdetector_pixel_offsets_are_unambiguous_1d_ids_1d_offset() -> None:
