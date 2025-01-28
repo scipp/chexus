@@ -348,11 +348,13 @@ class event_id_subset_of_detector_number(Validator):
         )
 
     def validate(self, node: Dataset | Group) -> Violation | None:
-        if not np.isin(
-            node.children['event_id'].value,
-            node.parent.children['detector_number'].value,
-        ).all():
-            return Violation(node.name)
+        event_ids = node.children['event_id'].value
+        detector_numbers = node.parent.children['detector_number'].value
+        if not np.isin(event_ids, detector_numbers).all():
+            diff = np.setdiff1d(event_ids, detector_numbers)
+            return Violation(
+                node.name, 'event_id:s that are not in detector_number: ' f'{diff}'
+            )
 
 
 class NXdetector_pixel_offsets_are_unambiguous(Validator):
