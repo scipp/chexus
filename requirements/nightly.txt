@@ -6,5 +6,5 @@
 #    pip-compile-multi
 #
 -r basetest.txt
-h5py==3.11.0
+h5py==3.12.1
     # via -r nightly.in

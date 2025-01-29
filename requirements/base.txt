@@ -5,7 +5,7 @@
 #
 #    pip-compile-multi
 #
-h5py==3.11.0
+h5py==3.12.1
     # via -r base.in
-numpy==2.1.1
+numpy==2.2.2
     # via h5py
