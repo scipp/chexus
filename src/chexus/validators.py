@@ -391,7 +391,7 @@ class NXdetector_pixel_offsets_are_unambiguous(Validator):
                 return Violation(
                     node.name,
                     f'{key} shape does not match detector_number and no {key}_indices '
-                    'attribute found on detector or axis attribute found on {key}',
+                    f'attribute found on detector or axis attribute found on {key}',
                 )
 
 
