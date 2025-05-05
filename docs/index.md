@@ -4,7 +4,6 @@
 :width: 60%
 :align: center
 :::
-
 :::{image} _static/logo-dark.svg
 :class: only-dark
 :alt: Chexus
@@ -12,27 +11,26 @@
 :align: center
 :::
 
-#
-
-<div style="display: block;width: 100%;font-size:1.2em;font-style:italic;color:#5a5a5a;text-align: center;">
-    Validate and check NeXus files
-    </br></br>
-</div>
-
-## Install
-
-`````{tab-set}
-````{tab-item} pip
-```sh
-pip install chexus
+```{raw} html
+   <style>
+    .transparent {display: none; visibility: hidden;}
+    .transparent + a.headerlink {display: none; visibility: hidden;}
+   </style>
 ```
-````
-````{tab-item} conda
-```sh
-conda install -c conda-forge -c scipp chexus
+
+```{role} transparent
 ```
-````
-`````
+
+# {transparent}`Chexus`
+
+<span style="font-size:1.2em;font-style:italic;color:var(--pst-color-text-muted)">
+  Validate and check NeXus files
+  </br></br>
+</span>
+
+:::{include} user-guide/installation.md
+:heading-offset: 1
+:::
 
 ## Run
 
@@ -50,11 +48,17 @@ There is also a Python API, but this is under construction and unstable.
 - `--exit-on-fail`: Return a non-zero exit code if validation fails.
 - `-r`, `--root-path`: Path to the top-level group to validate. Default is `''`.
 
+## Get in touch
+
+- If you have questions that are not answered by these documentation pages, ask on [discussions](https://github.com/scipp/chexus/discussions). Please include a self-contained reproducible example if possible.
+- Report bugs (including unclear, missing, or wrong documentation!), suggest features or view the source code [on GitHub](https://github.com/scipp/chexus).
+
 ```{toctree}
 ---
 hidden:
 ---
 
+user-guide/index
 api-reference/index
 developer/index
 about/index
