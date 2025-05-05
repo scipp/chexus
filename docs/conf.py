@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Scipp contributors (https://github.com/scipp)
+# Copyright (c) 2025 Scipp contributors (https://github.com/scipp)
 
 import doctest
 import os
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # General information about the project.
 project = 'Chexus'
-copyright = '2024 Scipp contributors'
+copyright = '2025 Scipp contributors'
 author = 'Scipp contributors'
 
 html_show_sourcelink = True
@@ -261,4 +261,7 @@ doctest_default_flags = (
 linkcheck_ignore = [
     # Specific lines in Github blobs cannot be found by linkcheck.
     r'https?://github\.com/.*?/blob/[a-f0-9]+/.+?#',
+    # Linkcheck seems to be denied access by some DOI resolvers.
+    # Since DOIs are supposed to be permanent, we don't need to check them.'
+    r'https://doi\.org/',
 ]

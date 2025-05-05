@@ -4,7 +4,6 @@
 :width: 60%
 :align: center
 :::
-
 :::{image} _static/logo-dark.svg
 :class: only-dark
 :alt: Chexus
@@ -12,14 +11,26 @@
 :align: center
 :::
 
-#
+```{raw} html
+   <style>
+    .transparent {display: none; visibility: hidden;}
+    .transparent + a.headerlink {display: none; visibility: hidden;}
+   </style>
+```
 
-<div style="display: block;width: 100%;font-size:1.2em;font-style:italic;color:#5a5a5a;text-align: center;">
-    Validate and check NeXus files
-    </br></br>
+```{role} transparent
+```
+
+# {transparent}`Chexus`
+
+<div style="font-size:1.2em;font-style:italic;color:var(--pst-color-text-muted);text-align:center;">
+  Validate and check NeXus files
+  </br></br>
 </div>
 
-## Install
+## Installation
+
+To install Chexus and all of its dependencies, use
 
 `````{tab-set}
 ````{tab-item} pip
@@ -49,6 +60,11 @@ There is also a Python API, but this is under construction and unstable.
 - `--ignore-missing`: Skip the validators that have missing dependencies.
 - `--exit-on-fail`: Return a non-zero exit code if validation fails.
 - `-r`, `--root-path`: Path to the top-level group to validate. Default is `''`.
+
+## Get in touch
+
+- If you have questions that are not answered by these documentation pages, ask on [discussions](https://github.com/scipp/chexus/discussions). Please include a self-contained reproducible example if possible.
+- Report bugs (including unclear, missing, or wrong documentation!), suggest features or view the source code [on GitHub](https://github.com/scipp/chexus).
 
 ```{toctree}
 ---
