@@ -28,9 +28,22 @@
   </br></br>
 </span>
 
-:::{include} user-guide/installation.md
-:heading-offset: 1
-:::
+## Installation
+
+To install Chexus and all of its dependencies, use
+
+`````{tab-set}
+````{tab-item} pip
+```sh
+pip install chexus
+```
+````
+````{tab-item} conda
+```sh
+conda install -c conda-forge -c scipp chexus
+```
+````
+`````
 
 ## Run
 
@@ -58,7 +71,6 @@ There is also a Python API, but this is under construction and unstable.
 hidden:
 ---
 
-user-guide/index
 api-reference/index
 developer/index
 about/index
