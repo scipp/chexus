@@ -798,3 +798,27 @@ def test_NXdetector_pixel_offsets_are_unambiguous_2d_ids_allow_axis_attr() -> No
         chexus.validators.NXdetector_pixel_offsets_are_unambiguous().validate(det)
         is None
     )
+
+
+def test_event_index_is_eight_bytes() -> None:
+    parent = chexus.Group(name="event_data", attrs={"NX_class": "NXevent_data"})
+    good = chexus.Dataset(
+        name='event_index',
+        value=[1, 2, 3],
+        shape=(3,),
+        dtype='int64',
+        parent=parent,
+    )
+    bad = chexus.Dataset(
+        name='event_index',
+        value=[1, 2, 3],
+        shape=(3,),
+        dtype='int32',
+        parent=parent,
+    )
+    assert chexus.validators.event_index_is_eight_bytes().applies_to(good)
+    assert chexus.validators.event_index_is_eight_bytes().applies_to(bad)
+    assert chexus.validators.event_index_is_eight_bytes().validate(good) is None
+    assert isinstance(
+        chexus.validators.event_index_is_eight_bytes().validate(bad), chexus.Violation
+    )

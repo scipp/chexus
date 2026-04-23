@@ -469,6 +469,24 @@ class NXlog_has_value(Validator):
                 return Violation(node.name, "NXlog must have a value")
 
 
+class event_index_is_eight_bytes(Validator):
+    def __init__(self) -> None:
+        super().__init__(
+            "event_index_too_small", "event_index needs to be an 8 byte type"
+        )
+
+    def applies_to(self, node: Dataset | Group) -> bool:
+        return (
+            isinstance(node, Dataset)
+            and node.parent.attrs.get("NX_class") == "NXevent_data"
+            and node.name == 'event_index'
+        )
+
+    def validate(self, node: Dataset | Group) -> Violation | None:
+        if np.dtype(node.dtype).itemsize < 8:
+            return Violation(node.name, "event_index type too small")
+
+
 def base_validators(*, has_scipp=True):
     validators = [
         depends_on_missing(),
