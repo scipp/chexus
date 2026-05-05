@@ -505,6 +505,7 @@ def base_validators(*, has_scipp=True):
         detector_numbers_unique_in_detector(),
         event_id_subset_of_detector_number(),
         NXdetector_pixel_offsets_are_unambiguous(),
+        event_index_is_eight_bytes(),
     ]
     if has_scipp:
         validators += [
