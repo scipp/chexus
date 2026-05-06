@@ -803,14 +803,14 @@ def test_NXdetector_pixel_offsets_are_unambiguous_2d_ids_allow_axis_attr() -> No
 def test_event_index_is_eight_bytes() -> None:
     parent = chexus.Group(name="event_data", attrs={"NX_class": "NXevent_data"})
     good = chexus.Dataset(
-        name='event_index',
+        name='event_data/event_index',
         value=[1, 2, 3],
         shape=(3,),
         dtype='int64',
         parent=parent,
     )
     bad = chexus.Dataset(
-        name='event_index',
+        name='event_data/event_index',
         value=[1, 2, 3],
         shape=(3,),
         dtype='int32',

@@ -479,7 +479,7 @@ class event_index_is_eight_bytes(Validator):
         return (
             isinstance(node, Dataset)
             and node.parent.attrs.get("NX_class") == "NXevent_data"
-            and node.name == 'event_index'
+            and node.name.rpartition('/')[-1] == 'event_index'
         )
 
     def validate(self, node: Dataset | Group) -> Violation | None:
