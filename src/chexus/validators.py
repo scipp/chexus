@@ -2,6 +2,7 @@
 # Copyright (c) 2023 Scipp contributors (https://github.com/scipp)
 import numpy as np
 
+from .nexus_base_classes import nexus_base_classes
 from .tree import Dataset, Group
 from .validate import Validator, Violation
 
@@ -71,6 +72,30 @@ class NX_class_is_legacy(Validator):
         nx_class = node.attrs.get("NX_class")
         if nx_class in ["NXgeometry", "NXorientation", "NXshape", "NXtranslation"]:
             return Violation(node.name, f"NX_class {nx_class} is deprecated")
+
+
+# Application/contributed classes expected in raw ESS files.
+# Add to this set if a new application class is encountered.
+nexus_application_classes = frozenset(["NXcanSAS"])
+
+valid_nx_classes = nexus_base_classes | nexus_application_classes
+
+
+class NX_class_invalid(Validator):
+    def __init__(self) -> None:
+        super().__init__(
+            "NX_class_invalid",
+            "NX_class is not a known NeXus class name "
+            "(typos like NXPositioner instead of NXpositioner)",
+        )
+
+    def applies_to(self, node: Dataset | Group) -> bool:
+        return isinstance(node, Group) and "NX_class" in node.attrs
+
+    def validate(self, node: Dataset | Group) -> Violation | None:
+        nx_class = node.attrs["NX_class"]
+        if nx_class not in valid_nx_classes:
+            return Violation(node.name, f"Unknown NX_class {nx_class!r}")
 
 
 class group_has_units(Validator):
@@ -497,6 +522,7 @@ def base_validators(*, has_scipp=True):
         mask_has_units(),
         non_numeric_dataset_has_units(),
         NX_class_attr_missing(),
+        NX_class_invalid(),
         NX_class_is_legacy(),
         transformation_depends_on_missing(),
         transformation_offset_units_missing(),
