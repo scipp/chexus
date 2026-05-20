@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2023 Scipp contributors (https://github.com/scipp)
+# Copyright (c) 2026 Scipp contributors (https://github.com/scipp)
 """Regenerate ``src/chexus/nexus_base_classes.py`` from the upstream NeXus
 definitions repository.
 
@@ -24,7 +24,7 @@ TARGET = (
 )
 
 HEADER = '''# SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2023 Scipp contributors (https://github.com/scipp)
+# Copyright (c) 2026 Scipp contributors (https://github.com/scipp)
 """NeXus base class names.
 
 Source: https://github.com/nexusformat/definitions/tree/main/base_classes
