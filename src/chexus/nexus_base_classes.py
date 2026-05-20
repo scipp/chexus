@@ -6,7 +6,8 @@ Source: https://github.com/nexusformat/definitions/tree/main/base_classes
 Refresh with:
 
     gh api repos/nexusformat/definitions/contents/base_classes \
-        --jq '.[].name' | grep '\\.nxdl\\.xml$' | sed 's/\\.nxdl\\.xml$//' | sort
+        --jq '.[].name | select(endswith(".nxdl.xml")) | rtrimstr(".nxdl.xml")' \
+        | sort
 
 Includes deprecated classes (NXgeometry, NXorientation, NXshape, NXtranslation),
 which are flagged separately by NX_class_is_legacy.
