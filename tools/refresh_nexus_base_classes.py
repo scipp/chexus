@@ -9,6 +9,7 @@ Requires the GitHub CLI (``gh``) to be installed and authenticated.
 Usage:
     python tools/refresh_nexus_base_classes.py
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -19,10 +20,7 @@ REPO = "nexusformat/definitions"
 DIRECTORY = "base_classes"
 SUFFIX = ".nxdl.xml"
 TARGET = (
-    Path(__file__).resolve().parent.parent
-    / "src"
-    / "chexus"
-    / "nexus_base_classes.py"
+    Path(__file__).resolve().parent.parent / "src" / "chexus" / "nexus_base_classes.py"
 )
 
 HEADER = '''# SPDX-License-Identifier: BSD-3-Clause
