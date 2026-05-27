@@ -822,3 +822,59 @@ def test_event_index_is_eight_bytes() -> None:
     assert isinstance(
         chexus.validators.event_index_is_eight_bytes().validate(bad), chexus.Violation
     )
+
+
+@pytest.mark.parametrize('field', ['event_time_offset', 'event_id'])
+def test_event_data_has_event_datasets_good(field) -> None:
+    parent = chexus.Group(
+        name="event_data",
+        attrs={"NX_class": "NXevent_data"},
+    )
+    parent.children = {
+        field: chexus.Dataset(
+            name=f'event_data/{field}',
+            value=[1, 2, 3],
+            shape=(3,),
+            dtype='int32',
+            parent=parent,
+        )
+    }
+    assert chexus.validators.event_data_group_has_event_datasets().applies_to(parent)
+    assert (
+        chexus.validators.event_data_group_has_event_datasets().validate(parent) is None
+    )
+
+
+@pytest.mark.parametrize('field', ['event_time_something', 'event_ids'])
+def test_event_data_has_event_datasets_bad(field) -> None:
+    parent = chexus.Group(
+        name="event_data",
+        attrs={"NX_class": "NXevent_data"},
+    )
+    parent.children = {
+        field: chexus.Dataset(
+            name=f'event_data/{field}',
+            value=[1, 2, 3],
+            shape=(3,),
+            dtype='int32',
+            parent=parent,
+        )
+    }
+    assert chexus.validators.event_data_group_has_event_datasets().applies_to(parent)
+    assert isinstance(
+        chexus.validators.event_data_group_has_event_datasets().validate(parent),
+        chexus.Violation,
+    )
+
+
+def test_event_data_has_event_datasets_bad_empty() -> None:
+    parent = chexus.Group(
+        name="event_data",
+        attrs={"NX_class": "NXevent_data"},
+    )
+    parent.children = {}
+    assert chexus.validators.event_data_group_has_event_datasets().applies_to(parent)
+    assert isinstance(
+        chexus.validators.event_data_group_has_event_datasets().validate(parent),
+        chexus.Violation,
+    )

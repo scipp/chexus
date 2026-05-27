@@ -487,6 +487,27 @@ class event_index_is_eight_bytes(Validator):
             return Violation(node.name, "event_index type too small")
 
 
+class event_data_group_has_event_datasets(Validator):
+    '''Strictly speaking, all fields of NXevent_data are optional.
+    But in practice they are required so it is better to be
+    lightly opinionated about this.'''
+
+    def __init__(self) -> None:
+        super().__init__(
+            "event_data_has_event_datasets", "NXevent_data must have event dataset(s)"
+        )
+
+    def applies_to(self, node: Dataset | Group) -> bool:
+        return isinstance(node, Group) and node.attrs.get("NX_class") == "NXevent_data"
+
+    def validate(self, node: Group | Dataset) -> Violation | None:
+        for name in node.children:
+            if name in ('event_time_offset', 'event_id'):
+                break
+        else:
+            return Violation(node.name, "NXevent_data must have event dataset(s)")
+
+
 def base_validators(*, has_scipp=True):
     validators = [
         depends_on_missing(),
@@ -506,6 +527,7 @@ def base_validators(*, has_scipp=True):
         event_id_subset_of_detector_number(),
         NXdetector_pixel_offsets_are_unambiguous(),
         event_index_is_eight_bytes(),
+        event_data_group_has_event_datasets(),
     ]
     if has_scipp:
         validators += [
