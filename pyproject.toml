@@ -99,6 +99,11 @@ pydocstyle.convention = "numpy"
     "S101",  # asserts are used for demonstration and are safe in notebooks
     "T201",  # printing is ok for demonstration purposes
 ]
+"tools/*" = [
+    "S603",  # subprocess call with constant args is fine in dev-time tools
+    "S607",  # invoking `gh` by name is fine in dev-time tools
+    "T201",  # printing is the right thing in CLI tools
+]
 
 [tool.ruff.format]
 quote-style = "preserve"

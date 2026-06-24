@@ -178,6 +178,33 @@ def test_NX_class_attr_missing():
     assert result.name == "x"
 
 
+@pytest.mark.parametrize(
+    "nx_class",
+    ["NXpositioner", "NXdisk_chopper", "NXgeometry", "NXcanSAS"],
+)
+def test_NX_class_invalid_accepts_known(nx_class: str):
+    group = chexus.Group(name="x", attrs={"NX_class": nx_class})
+    assert chexus.validators.NX_class_invalid().applies_to(group)
+    assert chexus.validators.NX_class_invalid().validate(group) is None
+
+
+@pytest.mark.parametrize(
+    "nx_class",
+    ["NXPositioner", "NXDetector", "NXfoo", "positioner"],
+)
+def test_NX_class_invalid_rejects_unknown(nx_class: str):
+    group = chexus.Group(name="x", attrs={"NX_class": nx_class})
+    assert chexus.validators.NX_class_invalid().applies_to(group)
+    result = chexus.validators.NX_class_invalid().validate(group)
+    assert isinstance(result, chexus.Violation)
+    assert result.name == "x"
+
+
+def test_NX_class_invalid_does_not_apply_without_attr():
+    group = chexus.Group(name="x", attrs={})
+    assert not chexus.validators.NX_class_invalid().applies_to(group)
+
+
 def test_NX_class_is_legacy():
     good = chexus.Group(name="x", attrs={"NX_class": "NXtransformations"})
     assert chexus.validators.NX_class_is_legacy().validate(good) is None
