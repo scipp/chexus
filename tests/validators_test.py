@@ -44,13 +44,21 @@ def test_depends_on_target_missing():
         attrs={"depends_on": "missing"},
     )
     group.children["transform"] = transform
+
     result = chexus.validators.depends_on_target_missing().validate(depends_on)
     # Still fails because 'transform' is not a transform
     assert isinstance(result, chexus.Violation)
     assert result.name == "x/depends_on"
     transform.attrs["transformation_type"] = "translation"
     transform.attrs["vector"] = [1.0, 0.0, 0.0]
+
+    result = chexus.validators.depends_on_target_missing().validate(depends_on)
+    # Still fails because 'transform' is not a NXtransformation
+    assert isinstance(result, chexus.Violation)
+    assert result.name == "x/depends_on"
+    transform.attrs["NX_class"] = "NXtransformation"
     assert chexus.validators.depends_on_target_missing().validate(depends_on) is None
+
     assert chexus.validators.depends_on_target_missing().applies_to(transform)
     result = chexus.validators.depends_on_target_missing().validate(transform)
     assert isinstance(result, chexus.Violation)
@@ -195,6 +203,7 @@ def test_transformation_depends_on_missing():
         dtype=float,
         parent=None,
         attrs={
+            "NX_class": "NXtransformation",
             "transformation_type": "translation",
             "vector": [1.0, 0.0, 0.0],
             "depends_on": ".",
@@ -209,6 +218,7 @@ def test_transformation_depends_on_missing():
         dtype=float,
         parent=None,
         attrs={
+            "NX_class": "NXtransformation",
             "transformation_type": "translation",
             "vector": [1.0, 0.0, 0.0],
         },
@@ -227,6 +237,7 @@ def test_transformation_offset_units_missing():
         dtype=float,
         parent=None,
         attrs={
+            "NX_class": "NXtransformation",
             "transformation_type": "translation",
             "vector": [1.0, 0.0, 0.0],
             "offset": 1.0,
@@ -244,6 +255,7 @@ def test_transformation_offset_units_missing():
         dtype=float,
         parent=None,
         attrs={
+            "NX_class": "NXtransformation",
             "transformation_type": "translation",
             "vector": [1.0, 0.0, 0.0],
             "offset": 1.0,
@@ -267,6 +279,7 @@ def test_transformation_offset_units_invalid_good(unit):
         dtype=float,
         parent=None,
         attrs={
+            "NX_class": "NXtransformation",
             "transformation_type": "translation",
             "vector": [1.0, 0.0, 0.0],
             "offset": 1.0,
@@ -291,6 +304,7 @@ def test_transformation_offset_units_invalid_bad(unit):
         dtype=float,
         parent=None,
         attrs={
+            "NX_class": "NXtransformation",
             "transformation_type": "translation",
             "vector": [1.0, 0.0, 0.0],
             "offset": 1.0,
@@ -320,6 +334,7 @@ def test_transformation_units_invalid(
             "name": "x",
             "parent": None,
             "attrs": {
+                "NX_class": "NXtransformation",
                 "transformation_type": transformation_type,
                 "vector": [1.0, 0.0, 0.0],
             },
