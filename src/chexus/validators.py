@@ -189,7 +189,11 @@ class non_numeric_dataset_has_units(Validator):
 
 
 def is_transformation(node: Dataset | Group) -> bool:
-    return "transformation_type" in node.attrs and "vector" in node.attrs
+    return (
+        node.attrs.get("NX_class") == "NXtransformation"
+        and "transformation_type" in node.attrs
+        and "vector" in node.attrs
+    )
 
 
 class transformation_offset_units_missing(Validator):
