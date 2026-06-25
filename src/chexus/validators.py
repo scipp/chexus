@@ -50,7 +50,7 @@ class depends_on_target_missing(Validator):
             if name not in start.children:
                 return Violation(node.name, f"depends_on target {target} is missing")
             start = start.children[name]
-        if not is_transformation(start):
+        if not is_complete_transformation(start):
             return Violation(
                 node.name, f"depends_on target {target} is not a transformation"
             )
@@ -217,6 +217,15 @@ def is_transformation(node: Dataset | Group) -> bool:
     return "transformation_type" in node.attrs and "vector" in node.attrs
 
 
+def is_complete_transformation(node: Dataset | Group) -> bool:
+    return (
+        is_transformation(node)
+        and "depends_on" in node.attrs
+        # Check that the transformation is type NX_NUMBER
+        and (isinstance(node, Dataset) or node.attrs.get('NX_class') == 'NXlog')
+    )
+
+
 class transformation_offset_units_missing(Validator):
     def __init__(self) -> None:
         super().__init__(
@@ -378,7 +387,7 @@ class event_id_subset_of_detector_number(Validator):
         if not np.isin(event_ids, detector_numbers).all():
             diff = np.setdiff1d(event_ids, detector_numbers)
             return Violation(
-                node.name, 'event_id:s that are not in detector_number: ' f'{diff}'
+                node.name, f'event_id:s that are not in detector_number: {diff}'
             )
 
 
@@ -533,6 +542,27 @@ class event_data_group_has_event_datasets(Validator):
             return Violation(node.name, "NXevent_data must have event dataset(s)")
 
 
+class children_of_nxtransformations_are_nxnumber(Validator):
+    def __init__(self) -> None:
+        super().__init__(
+            "NXtransformations_child_not_NX_NUMBER",
+            "children of NXtransformations must be NX_NUMBER",
+        )
+
+    def applies_to(self, node: Dataset | Group) -> bool:
+        return (
+            isinstance(node, Group)
+            and node.parent is not None
+            and node.parent.attrs.get("NX_class") == "NXtransformations"
+        )
+
+    def validate(self, node: Dataset | Group) -> Violation | None:
+        if not node.attrs.get("NX_class") == "NXlog":
+            return Violation(
+                node.name, "child of NXtransformation is not NXlog or dataset"
+            )
+
+
 def base_validators(*, has_scipp=True):
     validators = [
         depends_on_missing(),
@@ -554,6 +584,7 @@ def base_validators(*, has_scipp=True):
         NXdetector_pixel_offsets_are_unambiguous(),
         event_index_is_eight_bytes(),
         event_data_group_has_event_datasets(),
+        children_of_nxtransformations_are_nxnumber(),
     ]
     if has_scipp:
         validators += [

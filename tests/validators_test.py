@@ -57,6 +57,30 @@ def test_depends_on_target_missing():
     assert result.name == "x/transform"
 
 
+def test_depends_on_target_requires_depends_on_attribute():
+    group = chexus.Group(name="x", attrs={"NX_class": "NXdetector"})
+    depends_on = chexus.Dataset(
+        name="x/depends_on", value="transform", shape=None, dtype=str, parent=group
+    )
+    transform = chexus.Dataset(
+        name="x/transform",
+        value=None,
+        shape=None,
+        dtype=float,
+        parent=group,
+        attrs={
+            "transformation_type": "translation",
+            "vector": [1.0, 0.0, 0.0],
+        },
+    )
+    group.children = {"depends_on": depends_on, "transform": transform}
+
+    result = chexus.validators.depends_on_target_missing().validate(depends_on)
+
+    assert isinstance(result, chexus.Violation)
+    assert result.name == "x/depends_on"
+
+
 def test_float_dataset_units_missing():
     good = chexus.Dataset(
         name="x",
@@ -905,3 +929,23 @@ def test_event_data_has_event_datasets_bad_empty() -> None:
         chexus.validators.event_data_group_has_event_datasets().validate(parent),
         chexus.Violation,
     )
+
+
+def test_children_of_nxtransformations_are_nxnumber() -> None:
+    parent = chexus.Group(
+        name="transformations", attrs={"NX_class": "NXtransformations"}
+    )
+    good = chexus.Group(
+        name="transformations/good", attrs={"NX_class": "NXlog"}, parent=parent
+    )
+    bad = chexus.Group(
+        name="transformations/bad", attrs={"NX_class": "NXcollection"}, parent=parent
+    )
+
+    validator = chexus.validators.children_of_nxtransformations_are_nxnumber()
+
+    assert not validator.applies_to(parent)
+    assert validator.applies_to(good)
+    assert validator.validate(good) is None
+    assert validator.applies_to(bad)
+    assert isinstance(validator.validate(bad), chexus.Violation)
