@@ -935,6 +935,13 @@ def test_children_of_nxtransformations_are_nxnumber() -> None:
     parent = chexus.Group(
         name="transformations", attrs={"NX_class": "NXtransformations"}
     )
+    dataset = chexus.Dataset(
+        name="transformations/dataset",
+        value=1.0,
+        shape=None,
+        dtype=float,
+        parent=parent,
+    )
     good = chexus.Group(
         name="transformations/good", attrs={"NX_class": "NXlog"}, parent=parent
     )
@@ -945,6 +952,8 @@ def test_children_of_nxtransformations_are_nxnumber() -> None:
     validator = chexus.validators.children_of_nxtransformations_are_nxnumber()
 
     assert not validator.applies_to(parent)
+    assert validator.applies_to(dataset)
+    assert validator.validate(dataset) is None
     assert validator.applies_to(good)
     assert validator.validate(good) is None
     assert validator.applies_to(bad)
