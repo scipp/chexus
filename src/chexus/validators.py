@@ -551,13 +551,12 @@ class children_of_nxtransformations_are_nxnumber(Validator):
 
     def applies_to(self, node: Dataset | Group) -> bool:
         return (
-            isinstance(node, Group)
-            and node.parent is not None
+            node.parent is not None
             and node.parent.attrs.get("NX_class") == "NXtransformations"
         )
 
     def validate(self, node: Dataset | Group) -> Violation | None:
-        if not node.attrs.get("NX_class") == "NXlog":
+        if not (isinstance(node, Dataset) or node.attrs.get("NX_class") == "NXlog"):
             return Violation(
                 node.name, "child of NXtransformation is not NXlog or dataset"
             )
