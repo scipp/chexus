@@ -77,7 +77,7 @@ def _read_group(group: dict[str, Any], parent: Group | None = None) -> Group:
         if not isinstance(child, dict):
             continue
         module = child.get("module")
-        if module is None:
+        if module is None and "type" in child:
             if child["type"] == "group":
                 grp.children[child["name"]] = _read_group(child, parent=grp)
         elif module == "dataset":

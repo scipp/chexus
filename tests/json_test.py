@@ -73,6 +73,25 @@ def test_read_json_dataset_without_dtype_or_values_leaves_dtype_unset(
     assert node.value is None
 
 
+def test_read_json_ignores_child_without_module_or_type(tmp_path: Path):
+    root = _read_json(
+        tmp_path,
+        {
+            "name": "",
+            "children": [
+                {
+                    "config": {
+                        "name": "jaw_3_l",
+                        "source": "/entry/parameters/jaw_3_l",
+                    }
+                }
+            ],
+        },
+    )
+
+    assert root.children == {}
+
+
 def test_read_json_static_depends_on_value_validates_target(tmp_path: Path):
     content = {
         "name": "",
