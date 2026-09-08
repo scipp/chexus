@@ -2,6 +2,7 @@
 # Copyright (c) 2023 Scipp contributors (https://github.com/scipp)
 # ruff: noqa: T201
 import argparse
+import re
 import sys
 
 import chexus
@@ -26,6 +27,12 @@ def main():
         "--ignore-missing",
         action="store_true",
         help="Skip the validators that have missing dependencies",
+    )
+    # Add argument to skip certain entries based on a regex
+    parser.add_argument(
+        "--ignore-pattern",
+        type=str,
+        help="Skip entries that match the given regex pattern",
     )
     # Add argument to return bad exit code if validation fails
     parser.add_argument(
@@ -73,7 +80,11 @@ def main():
     validators = chexus.validators.base_validators(has_scipp=has_scipp)
 
     def skip_condition(node):
-        return not node.name.startswith(args.root_path)
+        if not node.name.startswith(args.root_path):
+            return True
+        if args.ignore_pattern and re.search(args.ignore_pattern, node.name):
+            return True
+        return False
 
     results = chexus.validate(
         group, validators=validators, skip_condition=skip_condition
